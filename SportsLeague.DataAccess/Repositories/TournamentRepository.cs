@@ -2,6 +2,7 @@
 using SportsLeague.Domain.Entities;
 using SportsLeague.Domain.Enums;
 using SportsLeague.Domain.Interfaces.Repositories;
+using SportsLeague.DataAccess.Context;
 
 namespace SportsLeague.DataAccess.Repositories
 {

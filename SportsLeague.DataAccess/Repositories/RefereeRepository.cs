@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SportsLeague.Domain.Entities;
 using SportsLeague.Domain.Interfaces.Repositories;
-
+using SportsLeague.DataAccess.Context;
 namespace SportsLeague.DataAccess.Repositories
 {
     public class RefereeRepository : GenericRepository<Referee>, IRefereeRepository
