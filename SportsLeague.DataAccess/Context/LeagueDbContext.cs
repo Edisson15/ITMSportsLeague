@@ -6,8 +6,8 @@ using System.Text;
 
 namespace SportsLeague.DataAccess.Context;
 
-    public class LeagueDbContext : DbContext
-    {
+public class LeagueDbContext : DbContext
+{
     public LeagueDbContext(DbContextOptions<LeagueDbContext> options)
      : base(options)
     {
@@ -18,8 +18,11 @@ namespace SportsLeague.DataAccess.Context;
     public DbSet<Tournament> Tournaments => Set<Tournament>();
     public DbSet<Referee> Referees => Set<Referee>();
     public DbSet<TournamentTeam> TournamentTeams => Set<TournamentTeam>();
+    public DbSet<Sponsor> Sponsors { get; set; }
+    public DbSet<TournamentSponsor> TournamentSponsors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
+
     {
         base.OnModelCreating(modelBuilder);
 
@@ -146,7 +149,49 @@ namespace SportsLeague.DataAccess.Context;
                   .IsUnique();
         });
 
+        // ── No se puede crear Sponsors con el  mismo nombre ──
+        modelBuilder.Entity<Sponsor>(entity =>
+         {
+             entity.HasIndex(s => s.Name)
+                   .IsUnique();
+
+         });
+
+        // ── OnModelCreating ──
+        modelBuilder.Entity<TournamentSponsor>(entity =>
+        {
+            entity.HasOne(ts => ts.Tournament)
+                  .WithMany(t => t.TournamentSponsors)
+                  .HasForeignKey(ts => ts.TournamentId);
+
+        });
+        
+        modelBuilder.Entity<TournamentSponsor>(entity =>
+        {
+            entity.HasOne(ts => ts.Sponsor)
+                  .WithMany(s => s.TournamentSponsors)
+                  .HasForeignKey(ts => ts.SponsorId);
+        });
+
+        // ── No se puede vincular 2 veces al mismo torneo ──
+        modelBuilder.Entity<TournamentSponsor>(entity =>
+        {
+
+            entity.HasIndex(ts => new { ts.TournamentId, ts.SponsorId })
+                  .IsUnique();
+
+        });
+
+        modelBuilder.Entity<TournamentSponsor>(entity =>
+        { 
+            entity.Property(ts => ts.ContractAmount)
+                  .HasPrecision(18, 2);
+
+
+        });
     }
 }
+
+
 
 

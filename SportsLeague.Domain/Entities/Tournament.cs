@@ -11,6 +11,7 @@ namespace SportsLeague.Domain.Entities
         public string Season { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public ICollection<TournamentSponsor> TournamentSponsors { get; set; }
         public TournamentStatus Status { get; set; } = TournamentStatus.Pending;
 
         // Navigation Properties
