@@ -63,14 +63,14 @@ namespace SportsLeague.API.Controllers
 
         // PUT api/Sponsor/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<SponsorResponseDTO>> Update(int id, SponsorRequestDTO dto)
+        public async Task<IActionResult> Update(int id, SponsorRequestDTO dto)
         {
             try
             {
                 var sponsor = _mapper.Map<Sponsor>(dto);
-                var updated = await _sponsorService.UpdateAsync(id, sponsor);
+                await _sponsorService.UpdateAsync(id, sponsor);
 
-                return Ok(_mapper.Map<SponsorResponseDTO>(updated));
+                return NoContent(); // 204 ✔
             }
             catch (KeyNotFoundException ex)
             {
@@ -89,7 +89,23 @@ namespace SportsLeague.API.Controllers
             try
             {
                 await _sponsorService.DeleteAsync(id);
-                return NoContent();
+                return NoContent(); // 204 ✔
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        // GET api/Sponsor/{id}/tournaments
+        [HttpGet("{id}/tournaments")]
+        public async Task<ActionResult<IEnumerable<TournamentSponsorResponseDTO>>> GetSponsorTournaments(int id)
+        {
+            try
+            {
+                var relations = await _sponsorService.GetTournamentsBySponsorAsync(id);
+
+                return Ok(_mapper.Map<IEnumerable<TournamentSponsorResponseDTO>>(relations)); // 200 ✔
             }
             catch (KeyNotFoundException ex)
             {
@@ -109,31 +125,20 @@ namespace SportsLeague.API.Controllers
                     dto.ContractAmount
                 );
 
-                return Ok(new { message = "Sponsor linked successfully" });
+                return StatusCode(201, new
+                {
+                    sponsorId = id,
+                    tournamentId = dto.TournamentId,
+                    contractAmount = dto.ContractAmount
+                }); // 201 ✔
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { message = ex.Message }); // 404 ✔
             }
             catch (InvalidOperationException ex)
             {
-                return Conflict(new { message = ex.Message });
-            }
-        }
-
-        // GET api/Sponsor/{id}/tournaments
-        [HttpGet("{id}/tournaments")]
-        public async Task<ActionResult<IEnumerable<TournamentSponsorResponseDTO>>> GetSponsorTournaments(int id)
-        {
-            try
-            {
-                var relations = await _sponsorService.GetTournamentsBySponsorAsync(id);
-
-                return Ok(_mapper.Map<IEnumerable<TournamentSponsorResponseDTO>>(relations));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
+                return Conflict(new { message = ex.Message }); // 409 ✔
             }
         }
 
@@ -145,11 +150,11 @@ namespace SportsLeague.API.Controllers
             {
                 await _sponsorService.UnlinkSponsorFromTournamentAsync(id, tournamentId);
 
-                return NoContent();
+                return NoContent(); // 204 ✔
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { message = ex.Message }); // 404 ✔
             }
         }
     }
