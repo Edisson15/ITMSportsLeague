@@ -7,6 +7,7 @@ using SportsLeague.Domain.Interfaces.Services;
 using SportsLeague.Domain.Services;
 using SportsLeague.DataAccess.Seeders;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Entity Framework Core ──
@@ -24,10 +25,10 @@ builder.Services.AddScoped<ITournamentTeamRepository, TournamentTeamRepository>(
 builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
 builder.Services.AddScoped<ITournamentSponsorRepository, TournamentSponsorRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
-builder.Services.AddScoped<IMatchResultRepository, MatchResultRepository>();// NUEVO
-builder.Services.AddScoped<IGoalRepository, GoalRepository>();// NUEVO
-builder.Services.AddScoped<ICardRepository, CardRepository>();// NUEVO
-
+builder.Services.AddScoped<IMatchResultRepository, MatchResultRepository>();
+builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<IMatchLineupRepository, MatchLineupRepository>();
 
 
 // ── Services ──
@@ -37,8 +38,11 @@ builder.Services.AddScoped<IRefereeService, RefereeService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();     
 builder.Services.AddScoped<ISponsorService, SponsorService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
-builder.Services.AddScoped<IMatchEventService, MatchEventService>();// NUEVO
-builder.Services.AddScoped<MatchValidationHelper>();// NUEVO
+builder.Services.AddScoped<IMatchEventService, MatchEventService>();
+builder.Services.AddScoped<MatchValidationHelper>();
+builder.Services.AddScoped<IStandingsService, StandingsService>();
+builder.Services.AddScoped<IMatchLineupService, MatchLineupService>();
+
 
 
 

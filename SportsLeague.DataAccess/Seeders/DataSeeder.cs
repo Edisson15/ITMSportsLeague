@@ -241,6 +241,34 @@ namespace SportsLeague.DataAccess.Seeders
                 });
             }
             await context.SaveChangesAsync();
+
+            // ═══ 6. DATOS ADICIONALES PARA PRUEBAS DE MATCHLINEUP ═══
+            // NOTA: Esta sección fue agregada para facilitar las pruebas
+            // en Swagger y demostrar el funcionamiento del Seeder.
+
+            var scheduledMatch = new Match
+            {
+                HomeTeamId = teams[0].Id, // Atlético Nacional
+                AwayTeamId = teams[1].Id, // Independiente Medellín
+                TournamentId = tournament.Id,
+                RefereeId = referees[0].Id,
+                MatchDate = DateTime.UtcNow.AddDays(5),
+                Status = MatchStatus.Scheduled
+            };
+
+            var finishedMatch = new Match
+            {
+                HomeTeamId = teams[2].Id, // América de Cali
+                AwayTeamId = teams[3].Id, // Deportivo Cali
+                TournamentId = tournament.Id,
+                RefereeId = referees[1].Id,
+                MatchDate = DateTime.UtcNow.AddDays(-5),
+                Status = MatchStatus.Finished
+            };
+
+            context.Matches.AddRange(scheduledMatch, finishedMatch);
+
+            await context.SaveChangesAsync();
         }
     }
 
